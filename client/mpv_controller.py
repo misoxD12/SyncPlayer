@@ -26,6 +26,14 @@ def get_time_pos(pipe):
     response = send_command(pipe, ["get_property", "time-pos"])
     return response["data"]
 
+def listen_for_events(pipe):
+    while True:
+        line = pipe.readline()
+        data = json.loads(line.decode("utf-8"))
+
+        if "event" in data:
+            print("Event received:", data)
+
 video_path = "D:/SyncPlayer/test.mp4"
 ipc_path = r"\\.\pipe\mpvsocket"
 
@@ -38,12 +46,7 @@ time.sleep(1)
 pipe = open(ipc_path, "r+b", buffering=0)
 
 print("mpv connected")
+send_command(pipe, ["observe_property", 1, "pause"])
 
-play(pipe)
-time.sleep(3)
 
-current_time = get_time_pos(pipe)
-print("Current position:", current_time)
-
-pause(pipe)
-print("paused")
+listen_for_events(pipe)

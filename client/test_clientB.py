@@ -1,13 +1,10 @@
 import asyncio
 import websockets
-import json
 
 async def connect():
     async with websockets.connect("ws://localhost:8765") as websocket:
         print("Connected to server!")
-
-        message = json.dumps({"type": "pause", "positon": 45.2})
-        await websocket.send(message)
+        await websocket.send("hello from B")
         await asyncio.sleep(5)
 
 asyncio.run(connect())
